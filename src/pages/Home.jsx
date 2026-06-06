@@ -14,26 +14,23 @@ useEffect(() => {
 }, []);
 
 const loadStats = async () => {
-
-  // USERS (profiles table)
-  const { count: users } = await supabase
+  const { count: usersCount } = await supabase
     .from("profiles")
     .select("*", { count: "exact", head: true });
 
-  // WORKERS
-  const { count: workers } = await supabase
-    .from("worker_profiles")
-    .select("*", { count: "exact", head: true });
+  const { count: workersCount } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
+    .eq("role", "worker");
 
-  // JOBS
-  const { count: jobs } = await supabase
+  const { count: jobsCount } = await supabase
     .from("jobs")
     .select("*", { count: "exact", head: true });
 
   setStats({
-    users: users || 0,
-    workers: workers || 0,
-    jobs: jobs || 0
+    users: usersCount || 0,
+    workers: workersCount || 0,
+    jobs: jobsCount || 0
   });
 };
   return (
