@@ -25,6 +25,7 @@ const [service, setService] = useState("");
 const [location, setLocation] = useState("");
 const [bio, setBio] = useState("");
 const [price, setPrice] = useState("");
+const [notifications, setNotifications] = useState([]);
 
 const openAdminWhatsApp = (message) => {
   const url = `https://wa.me/${18687326795}?text=${encodeURIComponent(message)}`;
@@ -37,6 +38,7 @@ useEffect(() => {
 
     await fetchJobs(profile, plan);
     await loadApplications();
+    await loadNotifications();
   };
 
   init();
@@ -351,6 +353,25 @@ const updateApplicationStatus = async (
     )
   );
 };
+const loadNotifications = async () => {
+  const { data: auth } = await supabase.auth.getUser();
+  const user = auth?.user;
+
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("notifications")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log("NOTIF ERROR:", error);
+    return;
+  }
+
+  setNotifications(data || []);
+};
   return (
   <div style={{ padding: "30px" }}>
 
@@ -395,7 +416,27 @@ fontWeight:"600"
 >
 Welcome Worker 👋
 </p>
+<h3>Notifications</h3>
 
+{notifications.length === 0 ? (
+  <p>No notifications yet</p>
+) : (
+  notifications.map((n) => (
+    <div
+      key={n.id}
+      style={{
+        background: "white",
+        padding: "12px",
+        marginBottom: "10px",
+        borderRadius: "10px",
+        border: "1px solid #eee"
+      }}
+    >
+      <strong>{n.title}</strong>
+      <p>{n.message}</p>
+    </div>
+  ))
+)}
 </div>
 
 <button

@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+const createNotification = async (user_id, title, message, type) => {
+  await supabase.from("notifications").insert({
+    user_id,
+    title,
+    message,
+    type
+  });
+};
 
 export default function CustomerDashboard() {
   const ADMIN_WHATSAPP = "18687326795";
@@ -25,7 +33,7 @@ const [jobs, setJobs] = useState([]);
 const [service, setService] = useState("");
 const [flyer, setFlyer] = useState(null);
 const [uploading, setUploading] = useState(false);
-
+const [notifications, setNotifications] = useState([]);
 
 
 
@@ -42,11 +50,8 @@ useEffect(() => {
 
 useEffect(() => {
   const init = async () => {
-    console.log("INIT RUNNING");
-
     await loadJobs();
-
-    console.log("LOAD JOBS FINISHED");
+    await loadNotifications(); // 👈 ADD THIS
   };
 
   init();
@@ -80,16 +85,34 @@ const loadJobs = async () => {
   const { data: auth } = await supabase.auth.getUser();
   const user = auth?.user;
 
-  console.log("AUTH USER ID:", user?.id);
+  if (!user) return;
 
   const { data, error } = await supabase
     .from("jobs")
-    .select("*");
+    .select("*")
+    .eq("customer_id", user.id); // ✅ THIS IS THE FIX
 
-  console.log("ALL JOBS:", data);
-  console.log("ERROR:", error);
+  if (error) {
+    console.log("ERROR:", error);
+    return;
+  }
 
   setJobs(data || []);
+};
+const loadNotifications = async () => {
+  const { data: auth } = await supabase.auth.getUser();
+
+  const user = auth?.user;
+
+  if (!user) return;
+
+  const { data } = await supabase
+    .from("notifications")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  setNotifications(data || []);
 };
 const uploadFlyer = async (e) => {
   const file = e.target.files[0];
@@ -348,7 +371,6 @@ const loadApplications = async () => {
   setApplications(enriched);
 };
 const hireWorker = async (app) => {
-
   const worker = app.worker;
 
   if (!worker?.phone) {
@@ -359,41 +381,49 @@ const hireWorker = async (app) => {
   const { error } = await supabase
     .from("job_applications")
     .update({
-      status:"contacted"
+      status: "contacted",
     })
     .eq("id", app.id);
 
-  if(error){
+  if (error) {
     console.log(error);
     return;
   }
 
-  const cleanPhone =
-    worker.phone.replace(/\D/g,"");
+  const cleanPhone = worker.phone.replace(/\D/g, "");
+
+  const jobTitle = app.job?.title || "your application";
 
   const message = `Hi ${worker.name},
 
-You were contacted regarding "${app.job?.title || "your application"}" through HireSmart TT.
+You were contacted regarding "${jobTitle}" through HireSmart TT.
 
 Please reply to this message for more details.
 
 Thank you,
 HireSmart TT`;
 
+  // ✅ FIXED: use correct IDs here
+  await createNotification(
+    worker.id,   // FIX #1
+    "New Job Request",
+    `You were contacted for "${jobTitle}"`, // FIX #2
+    "hire"
+  );
+
   window.open(
     `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`,
     "_blank"
   );
 
-  setApplications(prev =>
-    prev.map(item =>
+  setApplications((prev) =>
+    prev.map((item) =>
       item.id === app.id
-        ? { ...item, status:"contacted" }
+        ? { ...item, status: "contacted" }
         : item
     )
   );
 };
-
   return (
     <div style={{ padding: "30px" }}>
   <div
@@ -457,6 +487,12 @@ marginTop: "20px"
   }}
 >
   Welcome Customer 👋
+  
+</p>
+<p style={{ fontSize: "14px" }}>
+  🔔 Notifications: {
+    notifications.filter(n => !n.read).length
+  }
 </p>
     </div>
 
