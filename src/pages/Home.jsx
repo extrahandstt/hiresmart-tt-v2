@@ -3,6 +3,39 @@ import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const [stats, setStats] = useState({
+  users: 0,
+  workers: 0,
+  jobs: 0
+});
+
+useEffect(() => {
+  loadStats();
+}, []);
+
+const loadStats = async () => {
+
+  // USERS (profiles table)
+  const { count: users } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true });
+
+  // WORKERS
+  const { count: workers } = await supabase
+    .from("worker_profiles")
+    .select("*", { count: "exact", head: true });
+
+  // JOBS
+  const { count: jobs } = await supabase
+    .from("jobs")
+    .select("*", { count: "exact", head: true });
+
+  setStats({
+    users: users || 0,
+    workers: workers || 0,
+    jobs: jobs || 0
+  });
+};
   return (
     <div
       style={{
@@ -51,7 +84,21 @@ justifyContent:"center",
 gap:"15px"
 }}
 >
+<div style={{ display: "flex", gap: "20px" }}>
 
+  <div>
+    👥 Users: {stats.users}
+  </div>
+
+  <div>
+    👷 Workers: {stats.workers}
+  </div>
+
+  <div>
+    📢 Jobs: {stats.jobs}
+  </div>
+
+</div>
 <button
 onClick={() => window.location="/signup"}
 style={{
