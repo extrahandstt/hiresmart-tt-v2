@@ -84,21 +84,7 @@ justifyContent:"center",
 gap:"15px"
 }}
 >
-<div style={{ display: "flex", gap: "20px" }}>
 
-  <div>
-    👥 Users: {stats.users}
-  </div>
-
-  <div>
-    👷 Workers: {stats.workers}
-  </div>
-
-  <div>
-    📢 Jobs: {stats.jobs}
-  </div>
-
-</div>
 <button
 onClick={() => window.location="/signup"}
 style={{
@@ -130,7 +116,21 @@ Login
 </button>
 
 </div>
+<div style={{ display: "flex", gap: "20px" }}>
 
+  <div>
+    👥 Users: {stats.users}
+  </div>
+
+  <div>
+    👷 Workers: {stats.workers}
+  </div>
+
+  <div>
+    📢 Jobs: {stats.jobs}
+  </div>
+
+</div>
 </div>
 
 
