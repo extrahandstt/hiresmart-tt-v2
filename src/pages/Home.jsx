@@ -61,7 +61,19 @@ marginBottom:"15px"
 >
 HireSmart TT
 </h1>
+<nav style={{ marginTop: "20px" }}>
+  <a href="/services/plumber" style={{ marginRight: "10px" }}>
+    Plumbers
+  </a>
 
+  <a href="/services/cleaner" style={{ marginRight: "10px" }}>
+    Cleaners
+  </a>
+
+  <a href="/services/electrician">
+    Electricians
+  </a>
+</nav>
 <p
 style={{
 fontSize:"20px",
