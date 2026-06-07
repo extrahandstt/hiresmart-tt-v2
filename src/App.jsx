@@ -6,6 +6,9 @@ import WorkerDashboard from "./pages/WorkerDashboard";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import Signup from "./pages/Signup";
 import Subscription from "./pages/Subscription";
+import PlumbersTT from "./pages/PlumbersTT";
+import CleanersTT from "./pages/CleanersTT";
+import ServicePage from "./pages/ServicePage";
 
 export default function App() {
   return (
@@ -17,6 +20,9 @@ export default function App() {
       <Route path="/worker" element={<WorkerDashboard />} />
       <Route path="/customer" element={<CustomerDashboard />} />
       <Route path="/subscription" element={<Subscription />} />
+      <Route path="/plumbers-trinidad" element={<PlumbersTT />} />
+      <Route path="/cleaners-trinidad" element={<CleanersTT />} />
+      <Route path="/services/:type" element={<ServicePage />} />
     </Routes>
   );
 }
