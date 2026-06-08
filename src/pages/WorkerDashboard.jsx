@@ -38,13 +38,13 @@ useEffect(() => {
     await loadApplications();
     await loadNotifications();
 
-    await fetchJobs(); // MUST be here
+    await fetchJobs(); // ← add this back
   };
 
   init();
 }, []);
-
-  useEffect(() => {
+  
+useEffect(() => {
   const test = async () => {
     const { data } = await supabase.auth.getUser();
     console.log("AUTH USER:", data.user);
@@ -261,28 +261,14 @@ const uploadAvatar = async (e) => {
 };
 
 const fetchJobs = async () => {
-  const { data: auth } = await supabase.auth.getUser();
-  const user = auth?.user;
-
-  if (!user) return;
-
-  const { data: profile } = await supabase
-    .from("worker_profiles")
+  let query = supabase
+    .from("jobs")
     .select("*")
-    .eq("id", user.id)
-    .single();
-
-  let query = supabase.from("jobs").select("*");
-
-  if (profile?.service) {
-    query = query.eq("service", profile.service);
-  }
-
-  query = query.eq("status", "approved");
+    .eq("status", "approved");
 
   const { data, error } = await query;
 
-  console.log("JOBS FROM SUPABASE:", data);
+  console.log("JOBS:", data);
 
   if (error) {
     console.log(error);
