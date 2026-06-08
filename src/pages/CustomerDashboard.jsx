@@ -881,6 +881,7 @@ fontWeight:"bold"
     <option value="">Select worker category</option>
     <option>Plumber</option>
     <option>Cleaner</option>
+    <option>Kitchen Staff</option>
     <option>Painter</option>
     <option>Landscaper</option>
     <option>Carpenter</option>
@@ -908,7 +909,7 @@ fontWeight:"bold"
     <option>Security</option>
     <option>Construction Worker</option>
     <option>Makeup Artist</option>
-
+    
   </select>
 
   <small
