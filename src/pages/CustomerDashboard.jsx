@@ -34,7 +34,7 @@ const [service, setService] = useState("");
 const [flyer, setFlyer] = useState(null);
 const [uploading, setUploading] = useState(false);
 const [notifications, setNotifications] = useState([]);
-
+const [isJobPost, setIsJobPost] = useState(false);
 
 
 const openAdminWhatsApp = (message) => {
@@ -88,9 +88,10 @@ const loadJobs = async () => {
   if (!user) return;
 
   const { data, error } = await supabase
-    .from("jobs")
-    .select("*")
-    .eq("customer_id", user.id); // ✅ THIS IS THE FIX
+  .from("jobs")
+  .select("*")
+  .eq("customer_id", user.id)
+  .in("status", ["approved", "closed"]);
 
   if (error) {
     console.log("ERROR:", error);
@@ -142,7 +143,7 @@ const uploadFlyer = async (e) => {
   setUploading(false);
 };
 const saveJob = async () => {
-  if (
+    if (
   !title?.trim() ||
   !description?.trim() ||
   !location?.trim() ||
@@ -153,6 +154,11 @@ const saveJob = async () => {
   );
 
   return;
+  
+  if (!isJobPost && !editingId) {
+  alert("Please confirm this is a job listing before posting.");
+  return;
+}
 }
   const { data: auth } =
     await supabase.auth.getUser();
@@ -221,7 +227,8 @@ const saveJob = async () => {
         location,
         description,
         flyer,
-        status: "open"
+        status: "pending",   // admin approval
+state: "open"        // user control
       }));
 
     // Increase post count ONLY for new jobs
@@ -245,7 +252,9 @@ const saveJob = async () => {
       ? "Job updated successfully"
       : "Job posted successfully"
   );
-
+if (!editingId) {
+  sendAdminWhatsAppAlert(title, location, service);
+}
   loadJobs();
 
   // Reset form
@@ -300,18 +309,16 @@ const deleteJob = async (job) => {
 
   alert("Job deleted");
 };
-const toggleJobStatus = async (jobId, currentStatus) => {
+const toggleJobStatus = async (job) => {
   const newStatus =
-    currentStatus === "open"
+    job.status === "approved"
       ? "closed"
-      : "open";
+      : "approved";
 
   const { error } = await supabase
     .from("jobs")
-    .update({
-      status: newStatus
-    })
-    .eq("id", jobId);
+    .update({ status: newStatus })
+    .eq("id", job.id);
 
   if (error) {
     console.log(error);
@@ -435,6 +442,50 @@ HireSmart TT`;
         : item
     )
   );
+};
+const sendAdminWhatsAppAlert = (title, location, service) => {
+  const ADMIN_NUMBER = "18687326795";
+
+  const message = `🚨 New Job Posted on HireSmart TT
+
+📌 Title: ${title}
+🔧 Service: ${service}
+📍 Location: ${location}
+
+Please review in the admin dashboard.`;
+
+  const url = `https://wa.me/${ADMIN_NUMBER}?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
+};
+const reportWorker = async (worker) => {
+  const { data: auth } = await supabase.auth.getUser();
+  const user = auth?.user;
+
+  if (!user) return;
+
+  const reason = prompt("Why are you reporting this worker?");
+
+  if (!reason) return;
+
+  const { error } = await supabase
+    .from("reports")
+    .insert({
+      reporter_id: user.id,
+      reported_id: worker.id,
+      type: "worker",
+      target_type: "worker",
+      reason,
+      status: "pending"
+    });
+
+  if (error) {
+    console.log(error);
+    alert("Report failed");
+    return;
+  }
+
+  alert("Worker reported. Admin will review it.");
 };
   return (
     <div style={{ padding: "30px" }}>
@@ -740,7 +791,25 @@ fontWeight:"bold"
     }}
   >
     <h2>Post A Job</h2>
+<div
+  style={{
+    background: "#fff7ed",
+    border: "1px solid #fed7aa",
+    padding: "12px",
+    borderRadius: "10px",
+    marginBottom: "15px"
+  }}
+>
+  <strong style={{ display: "block", marginBottom: "6px" }}>
+    Job Posts Only
+  </strong>
 
+  <span style={{ color: "#9a3412", fontSize: "14px" }}>
+    This section is strictly for persons posting job opportunities.  
+    If you are offering a service (e.g. plumbing, cleaning, driving), please use the Workers section instead.  
+    Service ads posted here may be removed.
+  </span>
+</div>
     <div
   style={{
     display: "flex",
@@ -944,6 +1013,21 @@ Add details workers should know before applying
         style={{ width: "150px", marginTop: "10px" }}
       />
     )}
+<div style={{ marginTop: "15px" }}>
+  <label style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+    <input
+      type="checkbox"
+      checked={isJobPost}
+      onChange={(e) => setIsJobPost(e.target.checked)}
+      style={{ marginTop: "3px" }}
+    />
+
+    <span style={{ fontSize: "14px", color: "#374151" }}>
+      I confirm this is a <strong>job listing</strong> and not a service advertisement.
+      I understand that service ads belong in the Workers section.
+    </span>
+  </label>
+</div>
 
     <button
       onClick={saveJob}
@@ -1028,7 +1112,7 @@ Add details workers should know before applying
     marginLeft:"10px",
     padding:"8px 12px",
     background:
-      job.status === "open"
+      job.state === "open"
         ? "#f59e0b"
         : "#10b981",
     color:"white",
@@ -1037,9 +1121,9 @@ Add details workers should know before applying
     cursor:"pointer"
   }}
 >
-  {job.status === "open"
-    ? "Close Job"
-    : "Reopen Job"}
+  {job.status === "approved"
+  ? "Close Job"
+  : "Reopen Job"}
 </button>
 
 <button
@@ -1334,7 +1418,22 @@ Add details workers should know before applying
   >
     Contact Worker
   </button>
+  
 )}
+<button
+  onClick={() => reportWorker(worker)}
+  style={{
+    background: "#dc2626",
+    color: "white",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    border: "none",
+    cursor: "pointer",
+    marginTop: "10px"
+  }}
+>
+  🚩 Report Worker
+</button>
               </div>
 
     </div>

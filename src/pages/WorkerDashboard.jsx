@@ -84,6 +84,10 @@ const saveProfile = async () => {
   if (!user) {
     alert("Not logged in");
     return;
+    if (!name || !location || !service) {
+    alert("Please complete all required fields: Name, Location, and Service.");
+    return;
+  }
   }
 console.log({
   name: fullName,
@@ -371,6 +375,35 @@ const loadNotifications = async () => {
   }
 
   setNotifications(data || []);
+};
+const reportJob = async (job) => {
+  const { data: auth } = await supabase.auth.getUser();
+  const user = auth?.user;
+
+  if (!user) return;
+
+  const reason = prompt("Why are you reporting this job?");
+
+  if (!reason) return;
+
+  const { error } = await supabase
+    .from("reports")
+    .insert({
+      reporter_id: user.id,
+      reported_id: job.id,
+      type: "job",
+      target_type: "job",
+      reason,
+      status: "pending"
+    });
+
+  if (error) {
+    console.log(error);
+    alert("Report failed");
+    return;
+  }
+
+  alert("Job reported. Admin will review it.");
 };
   return (
   <div style={{ padding: "30px" }}>
@@ -1060,7 +1093,20 @@ fontWeight:"600"
     <p style={{ margin: "6px 0" }}>
       📍 <strong>Location:</strong> {app.job?.location}
     </p>
-
+<button
+  onClick={() => reportJob(app.job)}
+  style={{
+    background: "#ef4444",
+    color: "white",
+    padding: "6px 10px",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    marginTop: "8px"
+  }}
+>
+  🚩 Report Job
+</button>
     <p style={{ margin: "6px 0" }}>
       💰 <strong>Budget:</strong> {app.job?.budget}
     </p>

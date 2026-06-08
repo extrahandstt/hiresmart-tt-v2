@@ -13,7 +13,7 @@ export default function AdminDashboard() {
   const [profiles, setProfiles] = useState([]);
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState("all");
-  
+  const [reports, setReports] = useState([]);
 
   const logout = async () => {
   await supabase.auth.signOut();
@@ -24,8 +24,8 @@ export default function AdminDashboard() {
   // =========================
   useEffect(() => {
   const checkAccess = async () => {
-    const { data: authData } = await supabase.auth.getUser();
-    const user = authData?.user;
+        const { data: authData } = await supabase.auth.getUser();
+            const user = authData?.user;
 
     if (!user) {
       navigate("/");
@@ -72,6 +72,7 @@ if (usersError) {
   .order("created_at", { ascending: false });
 
 setJobs(jobData || []);
+loadReports();
 
     // ❌ REMOVED: pending workers (no longer needed)
 
@@ -218,6 +219,62 @@ alert(
   cursor: "pointer",
   fontWeight: "500"
 };
+const updateStatus = async (jobId, status) => {
+  const { error } = await supabase
+    .from("jobs")
+    .update({ status })
+    .eq("id", jobId);
+
+  if (error) {
+    console.log("STATUS UPDATE ERROR:", error);
+    return;
+  }
+
+  // refresh UI
+  setJobs(prev =>
+    prev.map(job =>
+      job.id === jobId ? { ...job, status } : job
+    )
+  );
+};
+const updateRole = async (userId, role) => {
+  const { error } = await supabase
+    .from("profiles")
+    .update({ role })
+    .eq("id", userId);
+
+  if (error) {
+    console.log("ROLE UPDATE ERROR:", error);
+    return;
+  }
+
+  setProfiles(prev =>
+    prev.map(user =>
+      user.id === userId ? { ...user, role } : user
+    )
+  );
+};
+const deleteUser = async (userId) => {
+  const { error } = await supabase
+    .from("profiles")
+    .delete()
+    .eq("id", userId);
+
+  if (error) {
+    console.log("DELETE USER ERROR:", error);
+    return;
+  }
+
+  setProfiles(prev => prev.filter(u => u.id !== userId));
+};
+const loadReports = async () => {
+  const { data } = await supabase
+    .from("reports")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  setReports(data || []);
+};
   return (
   <div>
 
@@ -270,6 +327,10 @@ onClick={() => setTab("subscriptions")}
 style={tabBtn}
 >
 💳 Subscriptions
+</button>
+
+<button onClick={() => setTab("reports")} style={tabBtn}>
+  🚩 Reports
 </button>
       </div>
           </div>
@@ -371,6 +432,8 @@ style={tabBtn}
             <div>
               <h3>{job.title}</h3>
 
+              <p>Status: {job.status}</p>
+
               <p>📍 {job.location}</p>
 
               <p>💰 {job.budget}</p>
@@ -391,6 +454,17 @@ style={tabBtn}
               >
                 Delete Job
               </button>
+              {job.status === "pending" && (
+  <>
+    <button onClick={() => updateStatus(job.id, "approved")}>
+      Approve
+    </button>
+
+    <button onClick={() => updateStatus(job.id, "rejected")}>
+      Reject
+    </button>
+  </>
+)}
             </div>
 
           </div>
@@ -425,7 +499,75 @@ style={tabBtn}
   </>
 )}
     </div>
+{tab === "reports" && (
+  <>
+    <h2>Reports</h2>
 
+    {reports.length === 0 ? (
+      <p>No reports yet</p>
+    ) : (
+      reports.map((r) => (
+        <div
+          key={r.id}
+          style={{
+            background: "white",
+            padding: "12px",
+            marginBottom: "10px",
+            borderRadius: "8px"
+          }}
+        >
+          <p><b>Type:</b> {r.type}</p>
+          <p><b>Reason:</b> {r.reason}</p>
+          <p><b>Status:</b> {r.status}</p>
+
+          <button
+            onClick={async () => {
+              await supabase
+                .from("reports")
+                .update({ status: "resolved" })
+                .eq("id", r.id);
+
+              loadReports();
+            }}
+            style={{
+              marginTop: "8px",
+              background: "green",
+              color: "white",
+              border: "none",
+              padding: "6px 10px",
+              borderRadius: "6px"
+            }}
+          >
+            Mark Resolved
+          </button>
+
+          <button
+            onClick={async () => {
+              await supabase
+                .from("reports")
+                .update({ status: "rejected" })
+                .eq("id", r.id);
+
+              loadReports();
+            }}
+            style={{
+              marginLeft: "8px",
+              marginTop: "8px",
+              background: "red",
+              color: "white",
+              border: "none",
+              padding: "6px 10px",
+              borderRadius: "6px"
+            }}
+          >
+            Reject
+          </button>
+        </div>
+      ))
+    )}
+  </>
+)}
   </div>
+  
 );
 }
