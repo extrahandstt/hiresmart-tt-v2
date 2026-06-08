@@ -35,94 +35,33 @@ export default function Home() {
   };
 
   return (
-    <div
-      style={{
-        fontFamily: "Arial,sans-serif",
-        background: "#f8fafc",
-        minHeight: "100vh",
-      }}
-    >
+    <div style={{ fontFamily: "Arial,sans-serif", background: "#f8fafc", minHeight: "100vh" }}>
+
       {/* HERO */}
-      <div
-        style={{
-          background: "linear-gradient(135deg,#2563eb,#4f46e5)",
-          color: "white",
-          padding: "80px 30px",
-          textAlign: "center",
-        }}
-      >
+      <div style={{ background: "linear-gradient(135deg,#2563eb,#4f46e5)", color: "white", padding: "80px 30px", textAlign: "center" }}>
         <h1 style={{ fontSize: "45px", marginBottom: "15px" }}>
           HireSmart TT
         </h1>
 
         <p>📲 Download The HireSmart TT App for faster access to workers & jobs</p>
 
-        {/* ✅ INSTALL BUTTON FIXED HERE */}
         <InstallButton />
 
-        <nav style={{ marginTop: "20px" }}>
-          <a href="/services/plumber" style={{ marginRight: "10px" }}>
-            Plumbers
-          </a>
-
-          <a href="/services/cleaner" style={{ marginRight: "10px" }}>
-            Cleaners
-          </a>
-
-          <a href="/services/electrician">Electricians</a>
-        </nav>
-
-        <p
-          style={{
-            fontSize: "20px",
-            maxWidth: "700px",
-            margin: "0 auto",
-          }}
-        >
-          Connecting Trinidad & Tobago with trusted workers and clients. Find
-          jobs, hire help, and grow your business faster.
+        <p style={{ fontSize: "20px", maxWidth: "700px", margin: "0 auto" }}>
+          Connecting Trinidad & Tobago with trusted workers and clients. Find jobs, hire help, and grow your business faster.
         </p>
 
-        <div
-          style={{
-            marginTop: "30px",
-            display: "flex",
-            justifyContent: "center",
-            gap: "15px",
-          }}
-        >
-          <button
-            onClick={() => (window.location = "/signup")}
-            style={{
-              padding: "14px 25px",
-              background: "white",
-              color: "#2563eb",
-              border: "none",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
+        <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginTop: "30px" }}>
+          <button onClick={() => window.location = "/signup"} style={{ padding: "14px 25px", background: "white", color: "#2563eb", border: "none", borderRadius: "8px", fontWeight: "bold" }}>
             Create Free Account
           </button>
 
-          <button
-            onClick={() => (window.location = "/login")}
-            style={{
-              padding: "14px 25px",
-              background: "transparent",
-              color: "white",
-              border: "1px solid white",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
+          <button onClick={() => window.location = "/login"} style={{ padding: "14px 25px", background: "transparent", color: "white", border: "1px solid white", borderRadius: "8px", fontWeight: "bold" }}>
             Login
           </button>
         </div>
 
-        <div style={{ display: "flex", gap: "20px", justifyContent: "center", marginTop: "20px" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "20px" }}>
           <div>👥 Users: {stats.users}</div>
           <div>👷 Workers: {stats.workers}</div>
           <div>📢 Jobs: {stats.jobs}</div>
@@ -132,140 +71,21 @@ export default function Home() {
       {/* HOW IT WORKS */}
       <div style={{ padding: "60px 30px", textAlign: "center" }}>
         <h2>How It Works</h2>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "30px",
-            flexWrap: "wrap",
-            marginTop: "30px",
-          }}
-        >
-          <div style={{ background: "white", padding: "25px", width: "250px", borderRadius: "15px" }}>
-            <h3>1️⃣ Post A Job</h3>
-            <p>Clients post jobs and describe what help they need.</p>
-          </div>
-
-          <div style={{ background: "white", padding: "25px", width: "250px", borderRadius: "15px" }}>
-            <h3>2️⃣ Workers Apply</h3>
-            <p>Workers submit applications and explain why they fit the job.</p>
-          </div>
-
-          <div style={{ background: "white", padding: "25px", width: "250px", borderRadius: "15px" }}>
-            <h3>3️⃣ Hire Instantly</h3>
-            <p>Hire workers and connect directly through WhatsApp.</p>
-          </div>
-        </div>
+        <p>Post jobs, get applicants, and hire instantly via WhatsApp.</p>
       </div>
 
       {/* SERVICES */}
       <div style={{ padding: "60px 30px", textAlign: "center", background: "#f1f5f9" }}>
         <h2>Services Available</h2>
-
-        <p style={{ color: "#6b7280", marginBottom: "30px" }}>
-          Find trusted workers for everyday jobs across Trinidad & Tobago
-        </p>
-
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: "15px",
-            maxWidth: "900px",
-            margin: "0 auto",
-          }}
-        >
-          {[
-            "🔧 Plumbers",
-            "⚡ Electricians",
-            "🧹 Cleaners",
-            "🚗 Mechanics",
-            "🚚 Drivers",
-            "🔨 Handymen",
-            "🎉 Event Helpers",
-            "🏠 Landscapers",
-            "🪚 Carpentry",
-            "📦 Delivery Services",
-            "🧱 Labourers",
-            "🖌️ Painters",
-            "👶 Babysitters",
-            "💼 Personal Assistants",
-            "🏢 Office Workers",
-          ].map((service, index) => (
-            <div
-              key={index}
-              style={{
-                background: "white",
-                padding: "12px 18px",
-                borderRadius: "20px",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
-            >
-              {service}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* BENEFITS */}
-      <div style={{ padding: "60px 30px" }}>
-        <h2 style={{ textAlign: "center" }}>Why Use HireSmart TT?</h2>
-
-        <div
-          style={{
-            display: "flex",
-            gap: "30px",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginTop: "30px",
-          }}
-        >
-          <div style={{ background: "white", padding: "25px", width: "300px", borderRadius: "15px" }}>
-            <h3>For Clients</h3>
-            <p>✅ Find workers quickly</p>
-            <p>✅ Compare applicants</p>
-            <p>✅ Hire through WhatsApp</p>
-            <p>✅ Manage jobs easily</p>
-          </div>
-
-          <div style={{ background: "white", padding: "25px", width: "300px", borderRadius: "15px" }}>
-            <h3>For Workers</h3>
-            <p>✅ Find nearby jobs</p>
-            <p>✅ Create a professional profile</p>
-            <p>✅ Receive hiring requests</p>
-            <p>✅ Grow your business</p>
-          </div>
-        </div>
+        <p>Find trusted workers across Trinidad & Tobago</p>
       </div>
 
       {/* FOOTER */}
       <div style={{ background: "#111827", color: "white", padding: "50px", textAlign: "center" }}>
         <h2>Start Today</h2>
-
-        <p>
-          Join HireSmart TT and connect with workers and clients across Trinidad & Tobago.
-        </p>
-
-        <button
-          onClick={() => (window.location = "/signup")}
-          style={{
-            marginTop: "15px",
-            padding: "14px 25px",
-            background: "#2563eb",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
-        >
-          Get Started
-        </button>
+        <p>Join HireSmart TT and grow your business.</p>
       </div>
+
     </div>
   );
 }
