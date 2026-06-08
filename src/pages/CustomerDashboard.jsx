@@ -142,6 +142,18 @@ const uploadFlyer = async (e) => {
   setUploading(false);
 };
 const saveJob = async () => {
+  if (
+  !title?.trim() ||
+  !description?.trim() ||
+  !location?.trim() ||
+  !service?.trim()
+) {
+  alert(
+    "Please complete all required fields:\n\n• Title\n• Description\n• Location\n• Service Needed"
+  );
+
+  return;
+}
   const { data: auth } =
     await supabase.auth.getUser();
 

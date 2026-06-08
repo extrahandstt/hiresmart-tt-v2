@@ -36,6 +36,21 @@ useEffect(() => {
 <p>
   Find trusted {type} professionals in Trinidad & Tobago. Hire verified workers fast through HireSmart TT.
 </p>
+<div style={{ marginTop: "20px" }}>
+  <h3>Explore other services</h3>
+
+  <a href="/services/plumber" style={{ marginRight: "10px" }}>
+    Plumbers
+  </a>
+
+  <a href="/services/cleaner" style={{ marginRight: "10px" }}>
+    Cleaners
+  </a>
+
+  <a href="/services/electrician">
+    Electricians
+  </a>
+</div>
       {workers.length === 0 ? (
         <p>No workers found for this service.</p>
       ) : (
