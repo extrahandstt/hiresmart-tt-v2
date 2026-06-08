@@ -154,7 +154,7 @@ const saveJob = async () => {
   );
 
   return;
-  
+
   if (!isJobPost && !editingId) {
   alert("Please confirm this is a job listing before posting.");
   return;
@@ -309,23 +309,27 @@ const deleteJob = async (job) => {
 
   alert("Job deleted");
 };
-const toggleJobStatus = async (job) => {
-  const newStatus =
-    job.status === "approved"
-      ? "closed"
-      : "approved";
+const toggleJobStatus = async (jobId, currentStatus) => {
+  const newStatus = currentStatus === "open" ? "closed" : "open";
 
   const { error } = await supabase
     .from("jobs")
     .update({ status: newStatus })
-    .eq("id", job.id);
+    .eq("id", jobId);
 
   if (error) {
-    console.log(error);
+    console.log("Toggle status error:", error.message);
     return;
   }
 
-  loadJobs();
+  // update UI immediately (important)
+  setJobs((prev) =>
+    prev.map((job) =>
+      job.id === jobId ? { ...job, status: newStatus } : job
+    )
+  );
+
+  console.log(`Job ${jobId} changed to ${newStatus}`);
 };
 const loadApplications = async () => {
   const { data, error } = await supabase
@@ -1112,7 +1116,7 @@ Add details workers should know before applying
     marginLeft:"10px",
     padding:"8px 12px",
     background:
-      job.state === "open"
+      job.status === "open"
         ? "#f59e0b"
         : "#10b981",
     color:"white",
@@ -1121,9 +1125,9 @@ Add details workers should know before applying
     cursor:"pointer"
   }}
 >
-  {job.status === "approved"
-  ? "Close Job"
-  : "Reopen Job"}
+  {job.status === "closed"
+  ? "Reopen Job"
+  : "Close Job"}
 </button>
 
 <button
