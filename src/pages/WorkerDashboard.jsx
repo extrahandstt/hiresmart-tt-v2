@@ -33,17 +33,18 @@ const openAdminWhatsApp = (message) => {
 };
 useEffect(() => {
   const init = async () => {
-    const profile = await loadProfile();
-    const plan = await loadPlan();
-
-    await fetchJobs(profile, plan);
+    await loadProfile();
+    await loadPlan();
     await loadApplications();
     await loadNotifications();
+
+    await fetchJobs(); // MUST be here
   };
 
   init();
 }, []);
-useEffect(() => {
+
+  useEffect(() => {
   const test = async () => {
     const { data } = await supabase.auth.getUser();
     console.log("AUTH USER:", data.user);
@@ -259,20 +260,29 @@ const uploadAvatar = async (e) => {
   setUploading(false);
 };
 
-const fetchJobs = async (profile, plan) => {
+const fetchJobs = async () => {
+  const { data: auth } = await supabase.auth.getUser();
+  const user = auth?.user;
+
+  if (!user) return;
+
+  const { data: profile } = await supabase
+    .from("worker_profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
 
   let query = supabase.from("jobs").select("*");
 
-  // ONLY apply filters if they exist
   if (profile?.service) {
     query = query.eq("service", profile.service);
   }
 
-  if (plan === "free") {
-    query = query.eq("status", "open");
-  }
+  query = query.eq("status", "approved");
 
   const { data, error } = await query;
+
+  console.log("JOBS FROM SUPABASE:", data);
 
   if (error) {
     console.log(error);
@@ -948,26 +958,16 @@ jobs.map((job) => (
       {job.title}
     </h3>
 <span
-style={{
-background:
-job.status==="open"
-? "#dcfce7"
-: "#fee2e2",
-
-color:
-job.status==="open"
-? "#166534"
-: "#991b1b",
-
-padding:"5px 10px",
-borderRadius:"20px",
-fontSize:"12px",
-fontWeight:"600"
-}}
+  style={{
+    background: job.status === "approved" ? "#dcfce7" : "#fee2e2",
+    color: job.status === "approved" ? "#166534" : "#991b1b",
+    padding: "5px 10px",
+    borderRadius: "20px",
+    fontSize: "12px",
+    fontWeight: "600"
+  }}
 >
-{job.status==="open"
-? "🟢 Open"
-: "🔴 Closed"}
+  {job.status === "approved" ? "🟢 Open" : "🔴 Closed"}
 </span>
     <p style={{ color:"#6b7280", margin:"5px 0" }}>
       📍 {job.location}

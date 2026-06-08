@@ -310,7 +310,8 @@ const deleteJob = async (job) => {
   alert("Job deleted");
 };
 const toggleJobStatus = async (jobId, currentStatus) => {
-  const newStatus = currentStatus === "open" ? "closed" : "open";
+  const newStatus =
+    currentStatus === "approved" ? "closed" : "approved";
 
   const { error } = await supabase
     .from("jobs")
@@ -318,18 +319,15 @@ const toggleJobStatus = async (jobId, currentStatus) => {
     .eq("id", jobId);
 
   if (error) {
-    console.log("Toggle status error:", error.message);
+    console.log(error.message);
     return;
   }
 
-  // update UI immediately (important)
   setJobs((prev) =>
     prev.map((job) =>
       job.id === jobId ? { ...job, status: newStatus } : job
     )
   );
-
-  console.log(`Job ${jobId} changed to ${newStatus}`);
 };
 const loadApplications = async () => {
   const { data, error } = await supabase
@@ -1105,29 +1103,19 @@ Add details workers should know before applying
     </p>
 
 <button
-  onClick={() =>
-    toggleJobStatus(
-      job.id,
-      job.status
-    )
-  }
+  onClick={() => toggleJobStatus(job.id, job.status)}
   style={{
-    marginTop:"10px",
-    marginLeft:"10px",
-    padding:"8px 12px",
-    background:
-      job.status === "open"
-        ? "#f59e0b"
-        : "#10b981",
-    color:"white",
-    border:"none",
-    borderRadius:"6px",
-    cursor:"pointer"
+    marginTop: "10px",
+    marginLeft: "10px",
+    padding: "8px 12px",
+    background: job.status === "open" ? "#10b981" : "#f59e0b",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer"
   }}
 >
-  {job.status === "closed"
-  ? "Reopen Job"
-  : "Close Job"}
+  {job.status === "open" ? "Close Job" : "Open Job"}
 </button>
 
 <button
