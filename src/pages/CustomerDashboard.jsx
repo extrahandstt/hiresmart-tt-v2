@@ -889,12 +889,25 @@ fontWeight:"bold"
     <option>Mechanic</option>
     <option>Driver</option>
     <option>Delivery Services</option>
-    <option>Event Helper</option>
+    <option>Event Worker</option>
     <option>Handyman</option>
     <option>Babysitter</option>
     <option>Personal Assistant</option>
     <option>Office Worker</option>
-
+    <option>Phone Technician</option>
+    <option>Wrecking Service</option>
+    <option>Laptop Repairs</option>
+    <option>Photography</option>
+    <option>Aircondition Technician</option>
+    <option>Hairdresser</option>
+    <option>Geriatric Services</option>
+    <option>Transport Services</option>
+    <option>Nail Technician</option>
+    <option>Business Registration</option>
+    <option>Appliances Repair</option>
+    <option>Security</option>
+    <option>Construction Worker</option>
+    <option>Makeup Artist</option>
 
   </select>
 

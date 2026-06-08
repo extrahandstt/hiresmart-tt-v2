@@ -69,21 +69,141 @@ export default function Home() {
       </div>
 
       {/* HOW IT WORKS */}
-      <div style={{ padding: "60px 30px", textAlign: "center" }}>
-        <h2>How It Works</h2>
-        <p>Post jobs, get applicants, and hire instantly via WhatsApp.</p>
+<section className="how-it-works">
+  <div className="how-container">
+
+    <h2>How It Works</h2>
+
+    <div className="steps-container">
+
+      <div className="step-card">
+        <div className="step-number">1️⃣</div>
+        <h3>Create an Account</h3>
+        <p>
+          Sign up as a worker or customer in a few simple steps.
+        </p>
       </div>
 
-      {/* SERVICES */}
-      <div style={{ padding: "60px 30px", textAlign: "center", background: "#f1f5f9" }}>
-        <h2>Services Available</h2>
-        <p>Find trusted workers across Trinidad & Tobago</p>
+      <div className="step-card">
+        <div className="step-number">2️⃣</div>
+        <h3>Post or Find Jobs</h3>
+        <p>
+          Customers post jobs and workers browse available opportunities.
+        </p>
       </div>
+
+      <div className="step-card">
+        <div className="step-number">3️⃣</div>
+        <h3>Connect & Get Work Done</h3>
+        <p>
+          Customers can contact workers directly and complete jobs easily.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{/* SERVICES AVAILABLE */}
+
+{/* SERVICES AVAILABLE */}
+<section className="services-section">
+  <h2>Services Available</h2>
+
+  <div className="services-grid">
+
+    {[
+      { name: "Plumber", icon: "🔧" },
+      { name: "Cleaner", icon: "🧹" },
+      { name: "Painter", icon: "🎨" },
+      { name: "Landscaper", icon: "🌿" },
+      { name: "Carpenter", icon: "🔨" },
+      { name: "Labourer", icon: "👷" },
+      { name: "Electrician", icon: "⚡" },
+      { name: "Mechanic", icon: "🔩" },
+      { name: "Driver", icon: "🚗" },
+      { name: "Delivery Services", icon: "📦" },
+      { name: "Event Worker", icon: "🎉" },
+      { name: "Handyman", icon: "🛠️" },
+      { name: "Babysitter", icon: "👶" },
+      { name: "Personal Assistant", icon: "📋" },
+      { name: "Office Worker", icon: "🏢" },
+      { name: "Phone Technician", icon: "📱" },
+      { name: "Wrecking Service", icon: "🚚" },
+      { name: "Laptop Repairs", icon: "💻" },
+      { name: "Photography", icon: "📸" },
+      { name: "Aircondition Technician", icon: "❄️" },
+      { name: "Hairdresser", icon: "✂️" },
+      { name: "Geriatric Services", icon: "❤️" },
+      { name: "Transport Services", icon: "🚌" },
+      { name: "Nail Technician", icon: "💅" },
+      { name: "Business Registration", icon: "📄" },
+      { name: "Appliance Repair", icon: "🔌" },
+      { name: "Security", icon: "🛡️" },
+      { name: "Construction Worker", icon: "🏗️" },
+      { name: "Makeup Artist", icon: "💄" },
+      { name: "Customer Service", icon: "🎧" },
+      { name: "Warehouse Worker", icon: "📦" },
+      { name: "Cashier", icon: "💵" },
+      { name: "Barber", icon: "💈" },
+      { name: "Pool Maintenance", icon: "🏊" },
+      { name: "Roofing", icon: "🏠" },
+      { name: "Massage Therapist", icon: "💆" }
+    ].map((service) => (
+      <div key={service.name} className="service-card">
+        <div className="service-icon">{service.icon}</div>
+        <div className="service-name">{service.name}</div>
+      </div>
+    ))}
+
+  </div>
+</section>
+
+
+{/* WHY USE HIRESMART TT */}
+<section className="why-hiresmart">
+  <h2>Why Use HireSmart TT?</h2>
+
+  <div className="why-grid">
+
+    <div className="why-card">
+      <h3>For Workers</h3>
+
+      <p className="why-subtext">
+        Grow your income and find opportunities faster.
+      </p>
+
+      <div className="why-features">
+        <div className="feature-item">✔ Find nearby jobs</div>
+        <div className="feature-item">✔ Create professional profile</div>
+        <div className="feature-item">✔ Receive hiring request</div>
+        <div className="feature-item">✔ Grow your income opportunities</div>
+      </div>
+    </div>
+
+    <div className="why-card">
+      <h3>For Clients</h3>
+
+      <p className="why-subtext">
+        Hire trusted workers easily and quickly.
+      </p>
+
+      <div className="why-features">
+        <div className="feature-item">✔ Find workers quickly</div>
+        <div className="feature-item">✔ Compare applicants</div>
+        <div className="feature-item">✔ Hire through WhatsApp</div>
+        <div className="feature-item">✔ Manage jobs easily</div>
+      </div>
+    </div>
+
+  </div>
+</section>
 
       {/* FOOTER */}
       <div style={{ background: "#111827", color: "white", padding: "50px", textAlign: "center" }}>
         <h2>Start Today</h2>
-        <p>Join HireSmart TT and grow your business.</p>
+        <p>Join us on HireSmart TT Workers Marketplace.</p>
       </div>
 
     </div>
