@@ -315,3 +315,107 @@
   font-weight: 600;
   color: #111827;
 }
+/* Worker action section */
+
+.worker-actions{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-top:20px;
+padding-top:15px;
+border-top:1px solid #f1f5f9;
+align-items:center;
+}
+
+.worker-actions span{
+flex:1;
+min-width:110px;
+text-align:center;
+padding:10px;
+border-radius:12px;
+font-weight:700;
+letter-spacing:.5px;
+box-shadow:0 2px 6px rgba(0,0,0,.05);
+}
+
+/* Shared button style */
+
+.worker-actions button{
+flex:1;
+min-width:150px;
+padding:12px 16px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:700;
+font-size:14px;
+transition:.3s;
+box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+/* Contact Worker */
+
+.contact-btn{
+background:linear-gradient(
+135deg,
+#10b981,
+#059669
+);
+
+color:white;
+}
+
+.contact-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(16,185,129,.35);
+}
+
+/* Shortlist */
+
+.shortlist-btn{
+background:linear-gradient(
+135deg,
+#f59e0b,
+#d97706
+);
+
+color:white;
+}
+
+.shortlist-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(245,158,11,.35);
+}
+
+/* Report */
+
+.report-btn{
+background:linear-gradient(
+135deg,
+#ef4444,
+#dc2626
+);
+
+color:white;
+}
+
+.report-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(239,68,68,.35);
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.worker-actions{
+flex-direction:column;
+align-items:stretch;
+}
+
+.worker-actions button,
+.worker-actions span{
+width:100%;
+}
+
+}

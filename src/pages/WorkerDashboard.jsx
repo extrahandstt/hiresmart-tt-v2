@@ -83,13 +83,16 @@ const saveProfile = async () => {
   const user = authData?.user;
 
   if (!user) {
-    alert("Not logged in");
-    return;
-    if (!name || !location || !service) {
-    alert("Please complete all required fields: Name, Location, and Service.");
-    return;
-  }
-  }
+  alert("Not logged in");
+  return;
+}
+
+if (!fullName || !location || !service || !phone) {
+  alert(
+    "Please complete Name, Phone, Location and Service."
+  );
+  return;
+}
 console.log({
   name: fullName,
   service,
@@ -191,7 +194,22 @@ await supabase
 .select("*")
 .eq("id",user.id)
 .single();
+if (
+  !workerProfile ||
+  !workerProfile.name ||
+  !workerProfile.phone ||
+  !workerProfile.service ||
+  !workerProfile.location ||
+  !workerProfile.bio ||
+  !workerProfile.avatar
+) {
+  alert(
+    "Please complete your profile before applying.\n\nRequired:\n• Profile picture\n• Name\n• Phone\n• Service\n• Location\n• About Yourself"
+  );
 
+  setTab("profile");
+  return;
+}
 if (
 profile.plan === "free" &&
 profile.monthly_application_count >= 10
@@ -738,7 +756,9 @@ fontWeight:"bold"
 </p>
   {/* PROFILE IMAGE */}
   <div style={{ marginBottom: "15px" }}>
-    <label>Profile Picture</label><br />
+    <label>
+  Profile Picture <span style={{color:"red"}}>*</span>
+</label><br />
     <input type="file" onChange={uploadAvatar} />
     {avatar && (
       <img
@@ -755,7 +775,9 @@ fontWeight:"bold"
 
   {/* FULL NAME */}
   <div style={{ marginBottom: "12px" }}>
-    <label>Full Name / Business Name</label><br />
+    <label>
+Full Name / Business Name <span style={{color:"red"}}>*</span>
+</label><br />
     <input
       value={fullName}
       onChange={(e) => setFullName(e.target.value)}
@@ -764,7 +786,9 @@ fontWeight:"bold"
   </div>
 
   <div style={{ marginBottom: "12px" }}>
-  <label>WhatsApp Number</label><br />
+  <label>
+WhatsApp Number <span style={{color:"red"}}>*</span>
+</label><br />
 
   <input
     placeholder="8687123456"
@@ -791,7 +815,9 @@ fontWeight:"bold"
 
   {/* SERVICE */}
   <div style={{ marginBottom: "12px" }}>
-    <label>Service Category</label><br />
+    <label>
+Service Category <span style={{color:"red"}}>*</span>
+</label><br />
     <input
       value={service}
       onChange={(e) => setService(e.target.value)}
@@ -801,7 +827,9 @@ fontWeight:"bold"
 
   {/* LOCATION */}
   <div style={{ marginBottom: "12px" }}>
-    <label>Location</label><br />
+    <label>
+Location <span style={{color:"red"}}>*</span>
+</label><br />
     <input
       value={location}
       onChange={(e) => setLocation(e.target.value)}
@@ -811,7 +839,9 @@ fontWeight:"bold"
 
   {/* ABOUT */}
   <div style={{ marginBottom: "12px" }}>
-    <label>About Yourself</label><br />
+    <label>
+About Yourself <span style={{color:"red"}}>*</span>
+</label><br />
     <textarea
       value={bio}
       onChange={(e) => setBio(e.target.value)}

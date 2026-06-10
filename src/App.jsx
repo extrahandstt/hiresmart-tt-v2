@@ -9,6 +9,10 @@ import Subscription from "./pages/Subscription";
 import PlumbersTT from "./pages/PlumbersTT";
 import CleanersTT from "./pages/CleanersTT";
 import ServicePage from "./pages/ServicePage";
+import RefundPolicy from "./pages/RefundPolicy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import AcceptableUse from "./pages/AcceptableUse";
 
 
 export default function App() {
@@ -24,6 +28,10 @@ export default function App() {
       <Route path="/plumbers-trinidad" element={<PlumbersTT />} />
       <Route path="/cleaners-trinidad" element={<CleanersTT />} />
       <Route path="/services/:type" element={<ServicePage />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+<Route path="/terms" element={<Terms />} />
+<Route path="/acceptable-use" element={<AcceptableUse />} />
+<Route path="/refund-policy" element={<RefundPolicy />} />
     </Routes>
   );
 }

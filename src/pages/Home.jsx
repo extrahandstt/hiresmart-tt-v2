@@ -204,6 +204,23 @@ export default function Home() {
       <div style={{ background: "#111827", color: "white", padding: "50px", textAlign: "center" }}>
         <h2>Start Today</h2>
         <p>Join us on HireSmart TT Workers Marketplace.</p>
+        <div style={{ marginTop: "10px", fontSize: "14px" }}>
+  <a href="/privacy-policy" style={{ marginRight: "10px" }}>
+    Privacy Policy
+  </a>
+
+  <a href="/terms" style={{ marginRight: "10px" }}>
+    Terms of Service
+  </a>
+
+  <a href="/acceptable-use" style={{ marginRight: "10px" }}>
+    Acceptable Use Policy
+  </a>
+
+  <a href="/refund-policy">
+    Refund Policy
+  </a>
+</div>
       </div>
 
     </div>

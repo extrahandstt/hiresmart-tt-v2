@@ -35,6 +35,7 @@ const [flyer, setFlyer] = useState(null);
 const [uploading, setUploading] = useState(false);
 const [notifications, setNotifications] = useState([]);
 const [isJobPost, setIsJobPost] = useState(false);
+const [shortlistedWorkers, setShortlistedWorkers] = useState([]);
 
 
 const openAdminWhatsApp = (message) => {
@@ -52,6 +53,7 @@ useEffect(() => {
   const init = async () => {
     await loadJobs();
     await loadNotifications(); // 👈 ADD THIS
+    await loadShortlistedWorkers();
   };
 
   init();
@@ -489,6 +491,85 @@ const reportWorker = async (worker) => {
 
   alert("Worker reported. Admin will review it.");
 };
+const shortlistWorker = async (workerId) => {
+const { data: auth } =
+await supabase.auth.getUser();
+
+const user = auth?.user;
+
+if (!user) return;
+
+const { error } =
+await supabase
+.from("shortlisted_workers")
+.insert({
+customer_id:user.id,
+worker_id:workerId
+});
+
+if (error) {
+  console.log("SHORTLIST ERROR:", error);
+  alert(error.message);
+  return;
+}
+
+alert("Worker shortlisted");
+
+loadShortlistedWorkers();
+};
+const loadShortlistedWorkers = async () => {
+  const { data: auth } =
+    await supabase.auth.getUser();
+
+  const user = auth?.user;
+
+  if (!user) return;
+
+  // Get shortlist rows
+
+  const { data: shortlist, error } =
+    await supabase
+      .from("shortlisted_workers")
+      .select("*")
+      .eq("customer_id", user.id);
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  if (!shortlist?.length) {
+    setShortlistedWorkers([]);
+    return;
+  }
+
+  // Get worker profiles
+
+  const workerIds =
+    shortlist.map(item => item.worker_id);
+
+  const { data: workers } =
+    await supabase
+      .from("worker_profiles")
+      .select("*")
+      .in("id", workerIds);
+
+  const workerMap = {};
+
+  workers?.forEach(worker => {
+    workerMap[worker.id] = worker;
+  });
+
+  const enriched = shortlist.map(item => ({
+    ...item,
+    worker_profiles:
+      workerMap[item.worker_id]
+  }));
+
+  console.log("ENRICHED:", enriched);
+
+  setShortlistedWorkers(enriched);
+};
   return (
     <div style={{ padding: "30px" }}>
   <div
@@ -595,6 +676,12 @@ marginTop: "20px"
 onClick={()=>setTab("applications")}
 >
 📋 Applications
+</button>
+
+<button
+onClick={()=>setTab("shortlisted")}
+>
+❤️ Shortlisted
 </button>
 
 <button
@@ -1201,9 +1288,8 @@ Add details workers should know before applying
       >
         Worker information unavailable
       </div>
-    );
-  }
-
+          );
+        }
   return (
     <div
       key={app.id}
@@ -1376,80 +1462,111 @@ Add details workers should know before applying
       {/* Bottom */}
 
       <div
-        style={{
-          display:"flex",
-          justifyContent:"space-between",
-          alignItems:"center",
-          marginTop:"20px"
-        }}
-      >
-
-        <span
-          style={{
-            padding:"6px 14px",
-            borderRadius:"30px",
-            fontSize:"12px",
-            fontWeight:"700",
-
-            background:
-              app.status==="pending"
-              ? "#fef3c7"
-              : app.status==="contacted"
-              ? "#dbeafe"
-              : "#dcfce7",
-
-            color:
-              app.status==="pending"
-              ? "#92400e"
-              : app.status==="contacted"
-              ? "#1d4ed8"
-              : "#166534"
-          }}
-        >
-          {app.status.toUpperCase()}
-        </span>
-
-        {app.status === "pending" && (
-  <button
-    onClick={() => hireWorker(app)}
-    style={{
-      background:"#10b981",
-      color:"white",
-      padding:"12px 18px",
-      border:"none",
-      borderRadius:"10px",
-      cursor:"pointer",
-      fontWeight:"600"
-    }}
-  >
-    Contact Worker
-  </button>
-  
-)}
-<button
-  onClick={() => reportWorker(worker)}
-  style={{
-    background: "#dc2626",
-    color: "white",
-    padding: "8px 12px",
-    borderRadius: "8px",
-    border: "none",
-    cursor: "pointer",
-    marginTop: "10px"
-  }}
+className="worker-actions"
 >
-  🚩 Report Worker
-</button>
-              </div>
 
+<span
+style={{
+padding:"6px 14px",
+borderRadius:"30px",
+fontSize:"12px",
+fontWeight:"700",
+
+background:
+app.status==="pending"
+? "#fef3c7"
+: app.status==="contacted"
+? "#dbeafe"
+: "#dcfce7",
+
+color:
+app.status==="pending"
+? "#92400e"
+: app.status==="contacted"
+? "#1d4ed8"
+: "#166534"
+}}
+>
+{app.status.toUpperCase()}
+</span>
+
+{app.status==="pending" && (
+
+<button
+className="contact-btn"
+onClick={() => hireWorker(app)}
+>
+💬 Contact Worker
+</button>
+
+)}
+
+<button
+className="shortlist-btn"
+onClick={() =>
+shortlistWorker(app.worker_id)
+}
+>
+❤️ Shortlist
+</button>
+
+<button
+className="report-btn"
+onClick={() =>
+reportWorker(worker)
+}
+>
+🚩 Report Worker
+</button>
+
+</div>
+              
     </div>
   );
+  
 })}
+
 
       </div>
     )}
   </>
 )}
+{tab === "shortlisted" && (
+  <>
+    <h2>Shortlisted Workers</h2>
+
+    {shortlistedWorkers.length === 0 ? (
+      <p>No workers shortlisted yet</p>
+    ) : (
+      shortlistedWorkers.map((item) => {
+        const w = item.worker_profiles;
+
+        if (!w) return null;
+
+        return (
+          <div key={item.id}>
+            <img src={w.avatar} width="80" />
+
+            <h3>{w.name}</h3>
+            <p>🔧 {w.service}</p>
+            <p>📍 {w.location}</p>
+            <p>💰 {w.price}</p>
+
+            const preMessage = `Hi ${w.name},
+
+I found your profile on HireSmart TT and I shortlisted you for future work.
+
+Are you available? Please let me know your rates and availability.
+
+Thank you.`;
+          </div>
+        );
+      })
+    )}
+  </>
+)}
 </div>
+
 );
+
 }
