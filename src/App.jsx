@@ -28,7 +28,7 @@ export default function App() {
       <Route path="/plumbers-trinidad" element={<PlumbersTT />} />
       <Route path="/cleaners-trinidad" element={<CleanersTT />} />
       <Route path="/services/:type" element={<ServicePage />} />
-      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 <Route path="/terms" element={<Terms />} />
 <Route path="/acceptable-use" element={<AcceptableUse />} />
 <Route path="/refund-policy" element={<RefundPolicy />} />

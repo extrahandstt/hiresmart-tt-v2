@@ -390,7 +390,9 @@ const loadApplications = async () => {
     worker: workerMap[app.worker_id] || null,
     job: jobMap[app.job_id] || null
   }));
-
+console.log("APPLICATIONS:", data);
+console.log("JOBS DATA:", jobsData);
+console.log("ENRICHED:", enriched);
   setApplications(enriched);
 };
 const hireWorker = async (app) => {
@@ -659,12 +661,13 @@ marginTop: "20px"
   </div>
 
   <div
-    style={{
-      display: "flex",
-      gap: "15px",
-      marginTop: "20px"
-    }}
-  >
+      style={{
+    display: "flex",
+    gap: "10px",
+    marginTop: "20px",
+    flexWrap: "wrap"
+  }}
+>
     <button
   onClick={() => setTab("dashboard")}
   style={{ padding: "10px", borderRadius: "8px", border: "none", cursor: "pointer" }}

@@ -40,7 +40,7 @@ export default function Home() {
       {/* HERO */}
       <div style={{ background: "linear-gradient(135deg,#2563eb,#4f46e5)", color: "white", padding: "80px 30px", textAlign: "center" }}>
         <h1 style={{ fontSize: "45px", marginBottom: "15px" }}>
-          HireSmart TT
+          HireSmart TT Workers Marketplace
         </h1>
 
         <p>📲 Download The HireSmart TT App for faster access to workers & jobs</p>
