@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block sensitive/internal pages (optional but good practice)
+Disallow: /login
+Disallow: /dashboard
+
+# Sitemap location (IMPORTANT)
+Sitemap: https://hiresmart-tt-v2.vercel.app/sitemap.xml
